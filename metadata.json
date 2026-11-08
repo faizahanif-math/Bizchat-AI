@@ -1,0 +1,9 @@
+{
+  "name": "BizChat AI",
+  "description": "Intelligent Conversations for Professionals - Premium enterprise AI chatbot for business strategy, executive insights, financial analysis, and market intelligence.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
+
