@@ -1,89 +1,388 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BizChat AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BizChat AI - Intelligent Conversations for Professionals</title>
+    <meta name="description" content="Intelligent Conversations for Professionals - Premium enterprise AI chatbot for business strategy, executive insights, financial analysis, and market intelligence." />
+    <meta property="og:title" content="BizChat AI - Intelligent Conversations for Professionals" />
+    <meta property="og:description" content="Intelligent Conversations for Professionals - Premium enterprise AI chatbot for business strategy, executive insights, financial analysis, and market intelligence." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>BizChat AI</h2>
-        </div>
-        <button id="newChatBtn" class="new-chat-btn">+ New Chat</button>
-        <div class="chat-history">
-            <!-- History items will go here -->
-        </div>
-        <div class="sidebar-footer">
-            <button id="settingsBtn">⚙️ Settings</button>
-        </div>
-    </div>
+    <!-- Google Fonts: Inter & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
 
-    <!-- Main Chat Area -->
-    <div class="main-content">
-        <div class="chat-container" id="chatContainer">
-            <!-- Welcome Screen (Empty State) -->
-            <div class="welcome-screen" id="welcomeScreen">
-                <h1>Good Evening, Faiza</h1>
-                <p>How can BizChat AI help you today?</p>
-                <div class="suggestion-cards">
-                    <div class="card" onclick="useSuggestion('Draft a professional email to a client.')">
-                        ✍️ Draft an Email
-                    </div>
-                    <div class="card" onclick="useSuggestion('Summarize this text into 5 bullet points: ')">
-                        📄 Summarize Report
-                    </div>
-                    <div class="card" onclick="useSuggestion('Give me 5 business ideas for a small startup.')">
-                        💡 Business Ideas
-                    </div>
-                    <div class="card" onclick="useSuggestion('Explain this code concept in simple terms: ')">
-                        💻 Code Help
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Chat Messages -->
-            <div id="messagesArea"></div>
-        </div>
-
-        <!-- Input Area -->
-        <div class="input-area">
-            <textarea id="userInput" placeholder="Type your message here..." rows="1"></textarea>
-            <button id="sendBtn">➤</button>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div class="modal-overlay" id="settingsModal">
-        <div class="modal-content">
-            <h2>Settings</h2>
-            <div class="setting-item">
-                <label>Theme</label>
-                <select id="themeSelect">
-                    <option value="dark">Dark Mode</option>
-                    <option value="light">Light Mode</option>
-                </select>
-            </div>
-            <div class="setting-item">
-                <label>Chat Background</label>
-                <select id="bgSelect">
-                    <option value="default">Default</option>
-                    <option value="gradient">Blue Gradient</option>
-                    <option value="dark-pure">Pure Black</option>
-                    <option value="light-pure">Pure White</option>
-                </select>
-            </div>
-            <button id="saveSettingsBtn" class="save-btn">Save Settings</button>
-            <button id="closeModalBtn" class="close-btn">Close</button>
-        </div>
-    </div>
-
-    <!-- Markdown parser -->
+    <!-- FontAwesome / Highlight.js & Marked for Rich Markdown -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="app.js"></script>
-</body>
+
+    <!-- Premium Stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body class="dark-theme">
+    <div id="app" class="app-layout">
+      <!-- Mobile Backdrop Overlay -->
+      <div id="sidebarOverlay" class="sidebar-overlay" aria-hidden="true"></div>
+
+      <!-- Left Sidebar -->
+      <aside id="sidebar" class="sidebar">
+        <!-- Brand Header -->
+        <div class="sidebar-header">
+          <div class="brand">
+            <div class="brand-icon-wrapper">
+              <i class="fa-solid fa-brain brand-icon"></i>
+              <div class="pulse-ring"></div>
+            </div>
+            <div class="brand-info">
+              <div class="brand-title-row">
+                <span class="brand-name">BizChat<span class="brand-accent">AI</span></span>
+                <span class="badge-pro">PLUS</span>
+              </div>
+              <span class="brand-tagline">Intelligent Conversations</span>
+            </div>
+          </div>
+          <button id="closeSidebarBtn" class="icon-btn mobile-only" title="Close sidebar" aria-label="Close sidebar">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Action: New Chat -->
+        <div class="sidebar-action">
+          <button id="newChatBtn" class="btn-new-chat">
+            <i class="fa-solid fa-plus"></i>
+            <span>New Executive Chat</span>
+            <kbd class="shortcut-key">⌘N</kbd>
+          </button>
+        </div>
+
+        <!-- Persona / Role Selector -->
+        <div class="sidebar-section">
+          <label class="section-label" for="personaSelect">
+            <i class="fa-solid fa-user-tie"></i> Executive Persona
+          </label>
+          <div class="custom-select-wrapper">
+            <select id="personaSelect" class="persona-select">
+              <option value="Executive Strategy Advisor" selected>👔 Executive Strategy Advisor</option>
+              <option value="Financial & Investment Analyst">📊 Financial & Investment Analyst</option>
+              <option value="Growth & Marketing Strategist">🚀 Growth & Marketing Strategist</option>
+              <option value="Corporate Legal & Compliance">⚖️ Corporate Legal & Compliance</option>
+              <option value="Operations & Process Architect">⚙️ Operations & Process Architect</option>
+            </select>
+            <i class="fa-solid fa-chevron-down select-arrow"></i>
+          </div>
+        </div>
+
+        <!-- Search Chat History -->
+        <div class="sidebar-search">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input
+            type="text"
+            id="searchHistoryInput"
+            placeholder="Search conversations..."
+            autocomplete="off"
+            aria-label="Search conversations"
+          />
+        </div>
+
+        <!-- Chat History List -->
+        <div class="sidebar-history-container">
+          <div class="section-label-row">
+            <span class="section-label"><i class="fa-solid fa-clock-rotate-left"></i> Conversations</span>
+            <button id="clearAllChatsBtn" class="text-btn text-muted" title="Clear all history">Clear All</button>
+          </div>
+          <div id="historyList" class="history-list">
+            <!-- Dynamically populated via app.js -->
+          </div>
+        </div>
+
+        <!-- Pro Tier Intelligence Widget -->
+        <div class="sidebar-pro-widget">
+          <div class="widget-header">
+            <span class="status-indicator"></span>
+            <span class="widget-title">Gemini Enterprise Active</span>
+          </div>
+          <p class="widget-desc">Enterprise ultra-low latency & high reasoning context enabled.</p>
+        </div>
+
+        <!-- Sidebar Footer & User Profile -->
+        <div class="sidebar-footer">
+          <div class="user-profile">
+            <div class="user-avatar" id="userAvatar">FA</div>
+            <div class="user-meta">
+              <span class="user-name">Faizah Hanif</span>
+              <span class="user-tier">Enterprise Workspace</span>
+            </div>
+          </div>
+          <div class="footer-actions">
+            <button id="openSettingsBtn" class="icon-btn" title="Settings & Presets" aria-label="Open settings">
+              <i class="fa-solid fa-gear"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <main class="main-content">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+          <div class="nav-left">
+            <button id="toggleSidebarBtn" class="icon-btn" title="Toggle Sidebar" aria-label="Toggle sidebar">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="active-chat-info">
+              <h1 id="activeChatTitle" class="chat-title">New Conversation</h1>
+              <div class="chat-tags">
+                <span id="activePersonaBadge" class="persona-badge">
+                  <i class="fa-solid fa-user-tie"></i> Executive Strategy Advisor
+                </span>
+                <span class="model-badge">
+                  <i class="fa-solid fa-bolt"></i> Gemini Enterprise
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="nav-right">
+            <button id="exportChatBtn" class="action-btn" title="Export conversation to Markdown">
+              <i class="fa-solid fa-file-export"></i>
+              <span class="btn-text">Export</span>
+            </button>
+            <button id="clearCurrentChatBtn" class="action-btn" title="Clear messages in this chat">
+              <i class="fa-solid fa-trash-can"></i>
+              <span class="btn-text">Reset</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Scrollable Messages Area -->
+        <div id="chatMessages" class="chat-messages" tabindex="0" role="log" aria-live="polite">
+          <!-- Welcome Screen (Default empty state) -->
+          <div id="welcomeScreen" class="welcome-screen">
+            <div class="welcome-hero">
+              <div class="hero-icon-container">
+                <i class="fa-solid fa-layer-group hero-icon"></i>
+                <div class="hero-glow"></div>
+              </div>
+              <h2 class="hero-title">BizChat <span class="text-gradient">AI</span></h2>
+              <p class="hero-tagline">Intelligent Conversations for Professionals</p>
+              <p class="hero-desc">
+                Enterprise-grade AI consultant designed for C-suite decision-makers, financial analysts, growth leaders, and legal strategists.
+              </p>
+            </div>
+
+            <!-- Suggestion Quick Prompts Grid -->
+            <div class="prompt-grid">
+              <div class="prompt-card" data-prompt="Analyze Q3 financial growth metrics and propose 3 operational margin improvement strategies for an enterprise SaaS business.">
+                <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="card-content">
+                  <h4>Margin Improvement Strategy</h4>
+                  <p>Analyze Q3 SaaS financial metrics and propose 3 margin optimization levers.</p>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+              </div>
+
+              <div class="prompt-card" data-prompt="Draft a comprehensive Go-To-Market (GTM) launch strategy for a B2B AI analytics platform targeting mid-market enterprises.">
+                <div class="card-icon"><i class="fa-solid fa-rocket"></i></div>
+                <div class="card-content">
+                  <h4>B2B GTM Launch Plan</h4>
+                  <p>Develop buyer personas, value propositions, and a multi-channel demand engine.</p>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+              </div>
+
+              <div class="prompt-card" data-prompt="Conduct a structured SWOT analysis on current generative AI enterprise software market leaders and identify defensible moats.">
+                <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="card-content">
+                  <h4>Enterprise SWOT & Moats</h4>
+                  <p>Evaluate competitive positioning, defensive barriers, and industry risks.</p>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+              </div>
+
+              <div class="prompt-card" data-prompt="Review contract liability risks for a software licensing agreement and formulate standard limitation of liability clauses.">
+                <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                <div class="card-content">
+                  <h4>Commercial Agreement Review</h4>
+                  <p>Identify indemnity exposure and draft balanced limitation of liability provisions.</p>
+                </div>
+                <i class="fa-solid fa-arrow-up-right-from-square card-arrow"></i>
+              </div>
+            </div>
+
+            <!-- Enterprise Feature Badges -->
+            <div class="capability-badges">
+              <div class="cap-item"><i class="fa-solid fa-lock"></i> Confidential Session</div>
+              <div class="cap-item"><i class="fa-solid fa-microchip"></i> Serverless Gemini Engine</div>
+              <div class="cap-item"><i class="fa-solid fa-code"></i> Structured Code & Tables</div>
+              <div class="cap-item"><i class="fa-solid fa-wand-magic-sparkles"></i> Executive Briefing Tone</div>
+            </div>
+          </div>
+
+          <!-- Chat conversation messages will be dynamically appended here -->
+
+          <!-- Typing Indicator -->
+          <div id="typingIndicator" class="typing-indicator-container hidden" aria-live="assertive">
+            <div class="message-row assistant">
+              <div class="avatar-assistant">
+                <i class="fa-solid fa-brain"></i>
+              </div>
+              <div class="typing-bubble">
+                <div class="typing-header">
+                  <span class="typing-title">BizChat AI</span>
+                  <span class="typing-status">Formulating strategic response...</span>
+                </div>
+                <div class="typing-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sticky Floating Input Area -->
+        <footer class="chat-input-area">
+          <div class="input-container-wrapper">
+            <!-- Quick Suggestion Chips -->
+            <div class="chips-container" id="quickChips">
+              <button class="chip" data-text="Provide an Executive Summary with key action items">
+                <i class="fa-solid fa-list-check"></i> Executive Summary
+              </button>
+              <button class="chip" data-text="Perform a risk assessment and mitigation plan">
+                <i class="fa-solid fa-triangle-exclamation"></i> Risk Mitigation
+              </button>
+              <button class="chip" data-text="Formulate this as a structured comparison table with pros & cons">
+                <i class="fa-solid fa-table"></i> Comparison Table
+              </button>
+              <button class="chip" data-text="Draft an email communication for company leadership and stakeholders">
+                <i class="fa-solid fa-envelope"></i> Stakeholder Memo
+              </button>
+            </div>
+
+            <!-- Input Box -->
+            <form id="chatForm" class="chat-form">
+              <div class="input-box-wrapper">
+                <textarea
+                  id="userInput"
+                  class="chat-textarea"
+                  placeholder="Ask BizChat AI a business question, strategy challenge, or financial inquiry... (Shift+Enter for newline)"
+                  rows="1"
+                  maxlength="4000"
+                  aria-label="Your message"
+                ></textarea>
+
+                <div class="input-controls">
+                  <div class="controls-left">
+                    <span id="charCount" class="char-count">0/4000</span>
+                    <button type="button" id="clearInputBtn" class="control-btn hidden" title="Clear input">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+
+                  <div class="controls-right">
+                    <button
+                      type="submit"
+                      id="sendBtn"
+                      class="send-btn"
+                      title="Send Message (Enter)"
+                      aria-label="Send message"
+                      disabled
+                    >
+                      <i class="fa-solid fa-arrow-up send-icon"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <div class="disclaimer-text">
+              <span>BizChat AI enterprise model may generate approximations. Verify sensitive financial, legal, and operational data with certified professionals.</span>
+            </div>
+          </div>
+        </footer>
+      </main>
+
+      <!-- Settings & Configuration Modal -->
+      <div id="settingsModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="settingsModalTitle" class="modal-title">
+              <i class="fa-solid fa-sliders"></i> Enterprise Settings
+            </h3>
+            <button id="closeSettingsModalBtn" class="icon-btn" aria-label="Close settings">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="form-group">
+              <label class="form-label" for="customInstructions">Custom System Directives</label>
+              <p class="form-desc">Provide persistent guidelines to tailor BizChat AI responses to your company's industry, brand voice, or format preferences.</p>
+              <textarea
+                id="customInstructions"
+                class="form-textarea"
+                rows="3"
+                placeholder="E.g., Always format recommendations in bullet points; include ROI estimates whenever discussing business initiatives."
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Active Model Engine</label>
+              <div class="model-spec-box">
+                <div class="spec-row">
+                  <span class="spec-key">Model</span>
+                  <span class="spec-val">Google Gemini Enterprise Serverless</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-key">Architecture</span>
+                  <span class="spec-val">Vercel Serverless Function (/api/chat)</span>
+                </div>
+                <div class="spec-row">
+                  <span class="spec-key">Reasoning Mode</span>
+                  <span class="spec-val">Adaptive High-Precision</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Data & Privacy</label>
+              <p class="form-desc">All conversations are stored locally in your browser workspace. No sensitive company data is shared externally.</p>
+              <div class="modal-actions-row">
+                <button type="button" id="exportAllDataBtn" class="btn-secondary">
+                  <i class="fa-solid fa-download"></i> Export All Chats (JSON)
+                </button>
+                <button type="button" id="purgeAllDataBtn" class="btn-danger">
+                  <i class="fa-solid fa-trash-can"></i> Purge Local History
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="saveSettingsBtn" class="btn-primary">
+              Save Preferences
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Frontend Application Logic -->
+    <script type="module" src="/app.js"></script>
+  </body>
 </html>
